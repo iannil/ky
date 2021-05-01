@@ -24,6 +24,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	rootCmd.AddCommand(cmdWnacg)
 	rootCmd.AddCommand(cmdNyaa)
+	rootCmd.AddCommand(cmdRemoteOK)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
