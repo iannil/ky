@@ -23,12 +23,13 @@ var cmdRemoteOK = &cobra.Command{
 		})
 
 		c.OnHTML("tr.job.remoteok-original", func(e *colly.HTMLElement) {
-			var name, fullname, link, time, tags string
+			var name, fullname, link, time, tags, isClosed string
 			e.ForEach("td", func(i int, element *colly.HTMLElement) {
 				if i == 1 {
 					name = element.ChildText("span.companyLink")
 					fullname = element.ChildText("a.preventLink")
 					link = element.ChildAttr("a.preventLink", "href")
+					isClosed = element.ChildText("span.closed")
 				}
 				if i == 3 {
 					tagsList := element.ChildTexts("a.action-add-tag")
@@ -38,7 +39,9 @@ var cmdRemoteOK = &cobra.Command{
 					time = element.ChildText("a")
 				}
 			})
-			table = append(table, []string{name+","+fullname, tags, time, link})
+			if isClosed != "closed" {
+				table = append(table, []string{name+","+fullname, tags, time, link})
+			}
 		})
 
 		c.Visit("https://remoteok.io/remote-php-jobs?location=worldwide")
