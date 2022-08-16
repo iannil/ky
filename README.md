@@ -1,6 +1,6 @@
 # ky
 代劳无聊事工具箱
-
+ 
 ## 安装
 ```shell
 go mod tidy
