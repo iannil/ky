@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var HttpClient *resty.Client
@@ -23,6 +24,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	rootCmd.AddCommand(cmdWnacg)
+	rootCmd.AddCommand(cmdWnacgl)
 	rootCmd.AddCommand(cmdNyaa)
 	rootCmd.AddCommand(cmdRemoteOK)
 

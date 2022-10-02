@@ -16,3 +16,4 @@
 .idea/*
 cache/*
 ky*
+.dist/*
