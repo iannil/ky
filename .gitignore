@@ -17,3 +17,5 @@
 cache/*
 ky*
 .dist/*
+
+.DS_Store
