@@ -5,14 +5,20 @@ import (
 	"github.com/gocolly/colly/v2"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
+	"regexp"
 	"strings"
 )
 
 var cmdRemoteOK = &cobra.Command{
 	Use:   "remoteok",
 	Aliases: []string{"ro"},
-	Short: "从remoteok.io获取最新的PHP远程工作",
+	Short: "从remoteok.io获取最新的远程工作",
 	Run: func(cmd *cobra.Command, args []string) {
+		start := "https://remoteok.io/worldwide"
+		if len(args) == 1 {
+			start = "https://remoteok.io/remote-"+args[0]+"-jobs?location=worldwide"
+		}
+
 		table := pterm.TableData{
 			{"Name", "Tags", "Time", "Link"},
 		}
@@ -22,7 +28,7 @@ var cmdRemoteOK = &cobra.Command{
 			fmt.Println("Visiting", r.URL)
 		})
 
-		c.OnHTML("tr.job.remoteok-original", func(e *colly.HTMLElement) {
+		c.OnHTML("tr.job", func(e *colly.HTMLElement) {
 			var name, fullname, link, time, tags, isClosed string
 			e.ForEach("td", func(i int, element *colly.HTMLElement) {
 				if i == 1 {
@@ -36,7 +42,8 @@ var cmdRemoteOK = &cobra.Command{
 					tags = strings.Join(tagsList, ",")
 				}
 				if i == 4 {
-					time = element.ChildText("a")
+					re := regexp.MustCompile("([0-9]+).?")
+					time = re.FindString(element.ChildText("a"))
 				}
 			})
 			if isClosed != "closed" {
@@ -44,7 +51,7 @@ var cmdRemoteOK = &cobra.Command{
 			}
 		})
 
-		c.Visit("https://remoteok.io/remote-php-jobs?location=worldwide")
+		c.Visit(start)
 
 		defer func() {
 			pterm.DefaultTable.WithHasHeader().WithData(table).Render()
